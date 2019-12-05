@@ -4,11 +4,20 @@ const fs = require('fs');
 const massArray = fs.readFileSync('input.txt').toString().split("\n");
 
 let i;
-let fuelRequired = 0;
+let totalFuelRequired = 0;
 
-for(i = 0; i < massArray.length; i++) {
-  // calculate fuel required and add to the sum
-  fuelRequired += (Math.floor(massArray[i] / 3) - 2);
+const calculateFuel = function (mass) {
+  // recursive function to calculate the fuel needed per part
+  const fuel = Math.floor(mass / 3) - 2;
+  if (fuel <= 0) return mass;
+  return mass + calculateFuel(fuel);
 }
 
-console.log(`Fuel Required: ${fuelRequired}`);
+for(i = 0; i < massArray.length; i++) {
+  // convert the mass to an integer before passing to the function
+  const partMass = parseInt(massArray[i]);
+  // calculate fuel required and add to the sum
+  totalFuelRequired += calculateFuel(partMass) - partMass;
+}
+
+console.log(`Total Fuel Required: ${totalFuelRequired}`);
