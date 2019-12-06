@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-console */
 const fs = require('fs');
 
 // load file and store values in an array
@@ -37,8 +39,8 @@ for (noun = 0; noun <= 99 && !computationComplete; noun++) {
 
     if (testArray[0] === 19690720) {
       computationComplete = true;
-      // eslint-disable-next-line no-console
-      console.log(`Noun (${noun}) + Verb (${verb}) Found!`);
+      console.log(`Solution found at noun [${noun}] + verb [${verb}]!`);
+      console.log(`Solution is ${100 * noun + verb}`);
     }
   }
 }
