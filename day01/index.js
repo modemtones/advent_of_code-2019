@@ -4,6 +4,7 @@ const fs = require('fs');
 const massArray = fs
   .readFileSync('input.txt')
   .toString()
+  .trim()
   .split('\n');
 
 let i;

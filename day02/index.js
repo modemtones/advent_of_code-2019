@@ -6,6 +6,7 @@ const fs = require('fs');
 const opcodeArray = fs
   .readFileSync('input.txt')
   .toString()
+  .trim()
   .split(',');
 
 let i;
