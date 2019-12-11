@@ -1,40 +1,80 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-console */
 const fs = require('fs');
+const readlineSync = require('readline-sync');
+
+const steps = [];
 
 // load file and store values in an array
-// const opcodeArray = fs
-//   .readFileSync('input.txt')
-//   .toString()
-//   .trim()
-//   .split(',');
+const opcodeArray = fs
+  .readFileSync('input.txt')
+  .toString()
+  .trim()
+  .split(',');
 
-const opcodeArray = '1002,4,3,4,33'.split(',');
+// const opcodeArray = '1002,4,3,4,33'.split(',');
+// const opcodeArray = '1101,100,-1,4,0'.split(',');
 
-let i;
-let noun;
-let verb;
+let i = 0;
 let computationComplete = false;
 
-const processOpcode = (opcode, param1, param2, param3) => {
+const getInput = param => {
+  const userInput = readlineSync.question(`Please enter a value: `);
+  opcodeArray[param] = parseInt(userInput, 10);
+  steps.push(`Wrote ${opcodeArray[param]} at location ${param}`);
+  i += 2;
+};
+
+const processOpcode = opcode => {
   // parse opcode and update params if needed
-  const oc = parseInt(opcode.slice(-2, opcode.length), 10);
+  const opcodeStr = opcode.toString();
+  const oc = parseInt(opcodeStr.slice(-2, opcodeStr.length), 10);
+  steps.push(`Got opcode ${oc} at Location ${i}`);
+  let param1;
+  let param2;
+  let param3;
   // use Math.floor to set param to 0 if NaN
-  const om1 = Math.floor(opcode.slice(-3, -2));
-  const om2 = Math.floor(opcode.slice(-4, -3));
-  const om3 = Math.floor(opcode.slice(-5, -4));
+  const omode1 = Math.floor(opcodeStr.slice(-3, -2));
+  const omode2 = Math.floor(opcodeStr.slice(-4, -3));
+  const omode3 = Math.floor(opcodeStr.slice(-5, -4));
+  steps.push(`omode1: ${omode1} || omode2: ${omode2} || omode3: ${omode3}`);
   switch (oc) {
     case 1:
+      param1 = omode1 === 0 ? opcodeArray[opcodeArray[i + 1]] : opcodeArray[i + 1];
+      param2 = omode2 === 0 ? opcodeArray[opcodeArray[i + 2]] : opcodeArray[i + 2];
+      param3 = opcodeArray[i + 3];
+      param1 = parseInt(param1, 10);
+      param2 = parseInt(param2, 10);
+      param3 = parseInt(param3, 10);
+      steps.push(`param1: ${param1} || param2: ${param2} || param3: ${param3}`);
       opcodeArray[param3] = param1 + param2;
+      steps.push(`Wrote ${opcodeArray[param3]} at location ${param3}`);
+      i += 4;
       return null;
     case 2:
+      param1 = omode1 === 0 ? opcodeArray[opcodeArray[i + 1]] : opcodeArray[i + 1];
+      param2 = omode2 === 0 ? opcodeArray[opcodeArray[i + 2]] : opcodeArray[i + 2];
+      param3 = opcodeArray[i + 3];
+      param1 = parseInt(param1, 10);
+      param2 = parseInt(param2, 10);
+      param3 = parseInt(param3, 10);
+      steps.push(`param1: ${param1} || param2: ${param2} || param3: ${param3}`);
       opcodeArray[param3] = param1 * param2;
+      steps.push(`Wrote ${opcodeArray[param3]} at location ${param3}`);
+      i += 4;
       return null;
     case 3:
-      opcodeArray[param1] = param2;
+      param1 = opcodeArray[i + 1];
+      steps.push(`param1: ${param1}`);
+      getInput(param1);
       return null;
     case 4:
-      return opcodeArray[param1];
+      param1 = omode1 === 0 ? opcodeArray[opcodeArray[i + 1]] : opcodeArray[i + 1];
+      steps.push(`param1: ${param1}`);
+      console.log(`Program Output: ${param1}`);
+      steps.push(`Program Output ${param1}`);
+      i += 2;
+      return null;
     case 99:
       computationComplete = true;
       return null;
@@ -43,54 +83,6 @@ const processOpcode = (opcode, param1, param2, param3) => {
   }
 };
 
-const inst1 = '1002';
-const opcode = parseInt(inst1.slice(-2, inst1.length), 10);
-// use Math.floor to set param to 0 if NaN
-const param1 = Math.floor(inst1.slice(-3, -2));
-const param2 = Math.floor(inst1.slice(-4, -3));
-const param3 = Math.floor(inst1.slice(-5, -4));
-console.log(opcode);
-console.log(param1);
-console.log(param2);
-console.log(param3);
-
-for (i = 0; i <= testArray.length - 4 && !computationComplete; i += 4) {
-  const opInstruction = parseInt(testArray[i], 10);
-
-  if (opInstruction !== 99) {
-    const opParameter1 = parseInt(testArray[testArray[i + 1]], 10);
-    const opParameter2 = parseInt(testArray[testArray[i + 2]], 10);
-    const opParameter3 = parseInt(testArray[i + 3], 10);
-    testArray[opParameter3] = processOpcode(opInstruction, opParameter1, opParameter2);
-  } else {
-    haltComputer = true;
-  }
+while (i <= opcodeArray.length - 4 && !computationComplete) {
+  processOpcode(opcodeArray[i]);
 }
-
-// for (noun = 0; noun <= 99 && !computationComplete; noun++) {
-//   for (verb = 0; verb <= 99 && !computationComplete; verb++) {
-//     const testArray = [...opcodeArray];
-//     let haltComputer = false;
-//     testArray[1] = noun;
-//     testArray[2] = verb;
-
-//     for (i = 0; i <= testArray.length - 4 && !haltComputer; i += 4) {
-//       const opInstruction = parseInt(testArray[i], 10);
-
-//       if (opInstruction !== 99) {
-//         const opParameter1 = parseInt(testArray[testArray[i + 1]], 10);
-//         const opParameter2 = parseInt(testArray[testArray[i + 2]], 10);
-//         const opParameter3 = parseInt(testArray[i + 3], 10);
-//         testArray[opParameter3] = processOpcode(opInstruction, opParameter1, opParameter2);
-//       } else {
-//         haltComputer = true;
-//       }
-//     }
-
-//     if (testArray[0] === 19690720) {
-//       computationComplete = true;
-//       console.log(`Solution found at noun [${noun}] + verb [${verb}]!`);
-//       console.log(`Solution is ${100 * noun + verb}`);
-//     }
-//   }
-// }
